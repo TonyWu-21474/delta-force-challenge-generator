@@ -280,9 +280,9 @@ function draw() {
     const value = item.value || "________";
     const valueLines = wrapText(
       value,
-      bodyLeft + labelWidth + 18,
+      bodyLeft + labelWidth + 54,
       y,
-      bodyWidth - labelWidth - 18,
+      bodyWidth - labelWidth - 54,
       48,
       2,
     );
