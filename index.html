@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="三角洲行动 1v1 单挑挑战书生成器，支持导出带水印的 PNG 与 PDF。" />
+  <title>三角洲单挑挑战书生成器</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">战</span>
+      <div>
+        <h1>三角洲单挑挑战书</h1>
+        <p>1v1 约战内容生成器</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button id="resetBtn" class="btn btn-ghost" type="button">
+        <i data-lucide="rotate-ccw"></i>
+        重置
+      </button>
+      <button id="pngBtn" class="btn btn-primary" type="button">
+        <i data-lucide="image"></i>
+        导出图片
+      </button>
+      <button id="pdfBtn" class="btn btn-accent" type="button">
+        <i data-lucide="file-text"></i>
+        导出 PDF
+      </button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="editor" aria-label="挑战书信息填写">
+      <div class="editor-head">
+        <span class="editor-kicker">填写信息</span>
+        <span class="editor-note">填写后即时生成</span>
+      </div>
+
+      <form id="generatorForm" class="form" autocomplete="off">
+        <div class="field-grid">
+          <label class="field">
+            <span>挑战者 ID</span>
+            <input id="challenger" type="text" value="飞天狙想要努力变胖" />
+          </label>
+
+          <label class="field">
+            <span>应战人 ID</span>
+            <input id="defender" type="text" placeholder="对方 ID" />
+          </label>
+
+          <label class="field">
+            <span>对战场地</span>
+            <input id="venue" type="text" value="自建房 1V1" />
+          </label>
+
+          <label class="field">
+            <span>对战时间</span>
+            <input id="matchTime" type="datetime-local" />
+          </label>
+
+          <label class="field">
+            <span>先拿到多少分获胜</span>
+            <input id="score" type="number" min="1" max="999" value="10" />
+          </label>
+
+          <label class="field">
+            <span>签发日期</span>
+            <input id="issueDate" type="date" />
+          </label>
+        </div>
+
+        <label class="field field-full">
+          <span>水印文字</span>
+          <input id="watermark" type="text" value="飞天狙想要努力变胖" />
+          <small>会以斜向半透明形式覆盖在图片和 PDF 中。</small>
+        </label>
+
+        <label class="field field-full switch-field">
+          <span>导出参数</span>
+          <label class="switch">
+            <input id="sealToggle" type="checkbox" checked />
+            <span class="switch-track"></span>
+            显示“战”字印章
+          </label>
+        </label>
+      </form>
+    </section>
+
+    <section class="preview" aria-label="挑战书预览">
+      <div class="preview-head">
+        <span class="editor-kicker">实时预览</span>
+        <span class="editor-note">A4 竖版比例 · 带水印</span>
+      </div>
+      <div class="canvas-frame">
+        <canvas id="poster" width="1240" height="1754"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>内容模板来自 B 站动态：飞天狙想要努力变胖</span>
+    <span>仅供娱乐，约战请遵守平台与游戏规则。</span>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
