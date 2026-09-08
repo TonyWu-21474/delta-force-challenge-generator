@@ -139,11 +139,11 @@ function drawWatermark(text) {
   ctx.translate(CANVAS_W / 2, CANVAS_H / 2);
   ctx.rotate(-0.46);
   ctx.fillStyle = "rgba(120, 42, 28, 0.10)";
-  ctx.font = `600 84px ${SANS}`;
+  ctx.font = `500 48px ${SANS}`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  const step = 330;
+  const step = 220;
   const startX = -Math.ceil((CANVAS_W / 2) / step) * step;
   const startY = -Math.ceil((CANVAS_H / 2) / step) * step;
 
@@ -251,13 +251,13 @@ function draw() {
   ];
 
   let y = 425;
-  const paragraphHeight = 58;
+  const paragraphHeight = 50;
 
   paragraphs.forEach((paragraph) => {
     const lines = wrapText(paragraph, bodyLeft, y, bodyWidth, paragraphHeight);
     lines.forEach((line) => {
       drawText(line.text, bodyLeft, line.y, {
-        font: `36px ${SERIF}`,
+        font: `30px ${SERIF}`,
         color: "#241b15",
       });
     });
@@ -273,20 +273,30 @@ function draw() {
   y += 6;
   details.forEach((item) => {
     drawText(`◆ ${item.label}：`, bodyLeft, y, {
-      font: `38px ${SERIF}`,
+      font: `30px ${SERIF}`,
       color: "#7e1d15",
     });
     const labelWidth = ctx.measureText(`◆ ${item.label}：`).width;
     const value = item.value || "________";
-    drawText(value, bodyLeft + labelWidth, y, {
-      font: `38px ${SERIF}`,
-      color: "#241b15",
+    const valueLines = wrapText(
+      value,
+      bodyLeft + labelWidth + 18,
+      y,
+      bodyWidth - labelWidth - 18,
+      48,
+      2,
+    );
+    valueLines.forEach((line) => {
+      drawText(line.text, bodyLeft + labelWidth + 18, line.y, {
+        font: `30px ${SERIF}`,
+        color: "#241b15",
+      });
     });
-    y += 66;
+    y = valueLines[valueLines.length - 1].y + 52;
   });
 
   drawText("对战规则", bodyLeft, y + 4, {
-    font: `700 40px ${SERIF}`,
+    font: `700 36px ${SERIF}`,
     color: "#1d1713",
   });
   y += 62;
@@ -302,16 +312,16 @@ function draw() {
     const lines = wrapText(rule, bodyLeft, y, bodyWidth, 55);
     lines.forEach((line) => {
       drawText(line.text, bodyLeft, line.y, {
-        font: `34px ${SERIF}`,
+        font: `32px ${SERIF}`,
         color: "#33281f",
       });
     });
-    y = lines[lines.length - 1].y + 48;
+    y = lines[lines.length - 1].y + 40;
   });
 
   y += 24;
   drawText("胜者扬眉，败者认罚，敢接就来，谁怂谁先溜！", centerX, y, {
-    font: `700 44px ${SERIF}`,
+    font: `700 40px ${SERIF}`,
     color: "#a72b1f",
     align: "center",
   });
@@ -321,11 +331,11 @@ function draw() {
   const signatureGap = 440;
 
   drawText("挑战者：", bodyLeft + 50, signatureY, {
-    font: `36px ${SERIF}`,
+    font: `30px ${SERIF}`,
     color: "#1d1713",
   });
   drawText(data.challenger, bodyLeft + 210, signatureY, {
-    font: `700 36px ${SERIF}`,
+    font: `700 30px ${SERIF}`,
     color: "#241b15",
   });
   ctx.save();
@@ -338,11 +348,11 @@ function draw() {
   ctx.restore();
 
   drawText("应战人：", bodyLeft + 50 + signatureGap, signatureY, {
-    font: `36px ${SERIF}`,
+    font: `30px ${SERIF}`,
     color: "#1d1713",
   });
   drawText(data.defender, bodyLeft + 210 + signatureGap, signatureY, {
-    font: `700 36px ${SERIF}`,
+    font: `700 30px ${SERIF}`,
     color: "#241b15",
   });
   ctx.save();
@@ -355,11 +365,11 @@ function draw() {
   ctx.restore();
 
   drawText("日期：", bodyLeft + 50, signatureY + 118, {
-    font: `36px ${SERIF}`,
+    font: `30px ${SERIF}`,
     color: "#1d1713",
   });
   drawText(data.issueDate, bodyLeft + 190, signatureY + 118, {
-    font: `700 36px ${SERIF}`,
+    font: `700 30px ${SERIF}`,
     color: "#241b15",
   });
 
