@@ -67,7 +67,10 @@ function valueOrBlank(id) {
   return (fields[id].value || "").trim() || "________";
 }
 
-function wrapText(text, x, y, maxWidth, lineHeight, maxLines = 2) {
+function wrapText(text, x, y, maxWidth, lineHeight, maxLines = 2, font = `34px ${SERIF}`) {
+  ctx.save();
+  ctx.font = font;
+
   const chars = [...text];
   const lines = [];
   let line = "";
@@ -94,9 +97,11 @@ function wrapText(text, x, y, maxWidth, lineHeight, maxLines = 2) {
       kept[kept.length - 1] = kept[kept.length - 1].slice(0, -1);
     }
     kept[kept.length - 1] = `${last.slice(0, -1)}…`;
+    ctx.restore();
     return kept.map((text, index) => ({ text, y: y + index * lineHeight }));
   }
 
+  ctx.restore();
   return lines.map((text, index) => ({ text, y: y + index * lineHeight }));
 }
 
@@ -254,7 +259,15 @@ function draw() {
   const paragraphHeight = 50;
 
   paragraphs.forEach((paragraph) => {
-    const lines = wrapText(paragraph, bodyLeft, y, bodyWidth, paragraphHeight);
+    const lines = wrapText(
+      paragraph,
+      bodyLeft,
+      y,
+      bodyWidth,
+      paragraphHeight,
+      2,
+      `30px ${SERIF}`,
+    );
     lines.forEach((line) => {
       drawText(line.text, bodyLeft, line.y, {
         font: `30px ${SERIF}`,
@@ -272,19 +285,25 @@ function draw() {
 
   y += 6;
   details.forEach((item) => {
-    drawText(`◆ ${item.label}：`, bodyLeft, y, {
+    const label = `◆ ${item.label}：`;
+    ctx.save();
+    ctx.font = `30px ${SERIF}`;
+    const labelWidth = ctx.measureText(label).width;
+    ctx.restore();
+
+    drawText(label, bodyLeft, y, {
       font: `30px ${SERIF}`,
       color: "#7e1d15",
     });
-    const labelWidth = ctx.measureText(`◆ ${item.label}：`).width;
     const value = item.value || "________";
     const valueLines = wrapText(
       value,
-      bodyLeft + labelWidth + 54,
+      bodyLeft + labelWidth + 18,
       y,
-      bodyWidth - labelWidth - 54,
+      bodyWidth - labelWidth - 18,
       48,
       2,
+      `30px ${SERIF}`,
     );
     valueLines.forEach((line) => {
       drawText(line.text, bodyLeft + labelWidth + 18, line.y, {
@@ -309,7 +328,15 @@ function draw() {
   ];
 
   rules.forEach((rule) => {
-    const lines = wrapText(rule, bodyLeft, y, bodyWidth, 55);
+    const lines = wrapText(
+      rule,
+      bodyLeft,
+      y,
+      bodyWidth,
+      55,
+      2,
+      `32px ${SERIF}`,
+    );
     lines.forEach((line) => {
       drawText(line.text, bodyLeft, line.y, {
         font: `32px ${SERIF}`,
