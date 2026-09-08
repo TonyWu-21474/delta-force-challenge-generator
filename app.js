@@ -25,7 +25,9 @@ const defaults = {
 
 const CANVAS_W = 1240;
 const CANVAS_H = 1754;
-const SERIF = '"STKaiti", "KaiTi", "FangSong", "SimSun", serif';
+const SERIF = '"FangSong", "仿宋", "STFangsong", "SimSun", serif';
+const TITLE_FONT = '"STZhongsong", "方正小标宋简体", "SimSun", serif';
+const SEAL_FONT = '"STKaiti", "KaiTi", "SimSun", serif';
 const SANS = '"Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif';
 
 function setTodayDefaults() {
@@ -115,8 +117,7 @@ function drawText(text, x, y, options = {}) {
   ctx.restore();
 }
 
-function drawSpacedTitle(text, centerX, y, spacing = 6) {
-  const font = `56px ${SERIF}`;
+function drawSpacedTitle(text, centerX, y, spacing = 6, font = `56px ${SERIF}`) {
   ctx.save();
   ctx.font = font;
   ctx.fillStyle = "#1d1713";
@@ -143,7 +144,7 @@ function drawWatermark(text) {
   ctx.save();
   ctx.translate(CANVAS_W / 2, CANVAS_H / 2);
   ctx.rotate(-0.46);
-  ctx.fillStyle = "rgba(120, 42, 28, 0.10)";
+  ctx.fillStyle = "rgba(122, 42, 28, 0.06)";
   ctx.font = `500 48px ${SANS}`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -163,36 +164,12 @@ function drawWatermark(text) {
 
 function drawPaper() {
   ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
-
-  const gradient = ctx.createLinearGradient(0, 0, CANVAS_W, CANVAS_H);
-  gradient.addColorStop(0, "#fffaf0");
-  gradient.addColorStop(0.5, "#fcf6e8");
-  gradient.addColorStop(1, "#f7eedb");
-  ctx.fillStyle = gradient;
+  ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
-
-  ctx.save();
-  ctx.strokeStyle = "rgba(124, 94, 50, 0.13)";
-  ctx.lineWidth = 3;
-  ctx.setLineDash([14, 10]);
-  ctx.strokeRect(48, 48, CANVAS_W - 96, CANVAS_H - 96);
-  ctx.restore();
-
-  ctx.save();
-  ctx.strokeStyle = "#b1462c";
-  ctx.lineWidth = 4;
-  ctx.strokeRect(64, 64, CANVAS_W - 128, CANVAS_H - 128);
-  ctx.restore();
-
-  ctx.save();
-  ctx.fillStyle = "rgba(167, 43, 31, 0.75)";
-  ctx.fillRect(0, 0, CANVAS_W, 10);
-  ctx.fillRect(0, CANVAS_H - 10, CANVAS_W, 10);
-  ctx.restore();
 }
 
 function drawSeal(x, y) {
-  const size = 118;
+  const size = 104;
 
   ctx.save();
   ctx.translate(x, y);
@@ -206,7 +183,7 @@ function drawSeal(x, y) {
   ctx.lineWidth = 3;
   ctx.strokeRect(-size / 2 + 7, -size / 2 + 7, size - 14, size - 14);
   ctx.fillStyle = "#f8e8d2";
-  ctx.font = `700 70px ${SERIF}`;
+  ctx.font = `700 64px ${SEAL_FONT}`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText("战", 0, 4);
@@ -229,96 +206,74 @@ function draw() {
   drawWatermark(data.watermark);
 
   const centerX = CANVAS_W / 2;
-  const bodyWidth = CANVAS_W - 300;
-  const bodyLeft = 150;
+  const bodyLeft = 170;
+  const bodyWidth = CANVAS_W - 340;
+  const rightX = bodyLeft + bodyWidth;
+  const indentX = bodyLeft + 60;
 
-  drawSpacedTitle("三角洲行动・单挑挑战书", centerX, 230);
+  drawText("三角洲行动", centerX, 205, {
+    font: "700 56px SimHei",
+    color: "#c00000",
+    align: "center",
+  });
+  drawSpacedTitle("单挑挑战书", centerX, 285, 8, `700 46px ${TITLE_FONT}`);
 
   ctx.save();
-  ctx.strokeStyle = "#1d1713";
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#c00000";
+  ctx.lineWidth = 4;
   ctx.beginPath();
-  ctx.moveTo(centerX - 235, 300);
-  ctx.lineTo(centerX + 235, 300);
+  ctx.moveTo(bodyLeft, 340);
+  ctx.lineTo(rightX, 340);
   ctx.stroke();
   ctx.restore();
 
-  ctx.save();
-  ctx.fillStyle = "#b1462c";
-  ctx.font = `34px ${SERIF}`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "alphabetic";
-  ctx.fillText("本人约战 · 愿赌服输", centerX, 350);
-  ctx.restore();
-
-  const paragraphs = [
-    `本人${data.challenger}（挑战者 ID），正式向${data.defender}（应战人 ID）发起三角洲行动 1v1 单挑约战。`,
-  ];
-
-  let y = 425;
+  let y = 410;
   const paragraphHeight = 50;
-
-  paragraphs.forEach((paragraph) => {
-    const lines = wrapText(
-      paragraph,
-      bodyLeft,
-      y,
-      bodyWidth,
-      paragraphHeight,
-      2,
-      `30px ${SERIF}`,
-    );
-    lines.forEach((line) => {
-      drawText(line.text, bodyLeft, line.y, {
-        font: `30px ${SERIF}`,
-        color: "#241b15",
-      });
+  const paragraph = `本人${data.challenger}（挑战者 ID），正式向${data.defender}（应战人 ID）发起三角洲行动 1v1 单挑约战。`;
+  const paragraphLines = wrapText(
+    paragraph,
+    indentX,
+    y,
+    bodyWidth - 60,
+    paragraphHeight,
+    2,
+    `30px ${SERIF}`,
+  );
+  paragraphLines.forEach((line) => {
+    drawText(line.text, indentX, line.y, {
+      font: `30px ${SERIF}`,
+      color: "#1a1a1a",
     });
-    y = lines[lines.length - 1].y + paragraphHeight + 12;
   });
+  y = paragraphLines[paragraphLines.length - 1].y + paragraphHeight + 24;
 
   const details = [
-    { label: "对战场地", value: data.venue },
-    { label: "对战时间", value: data.matchTime },
-    { label: "胜负定分", value: `先拿到 ${data.score} 分者获胜` },
+    { label: "一、对战场地", value: data.venue },
+    { label: "二、对战时间", value: data.matchTime },
+    { label: "三、胜负定分", value: `先拿到 ${data.score} 分者获胜` },
   ];
 
-  y += 6;
   details.forEach((item) => {
-    const label = `◆ ${item.label}：`;
-    ctx.save();
-    ctx.font = `30px ${SERIF}`;
-    const labelWidth = ctx.measureText(label).width;
-    ctx.restore();
-
-    drawText(label, bodyLeft, y, {
-      font: `30px ${SERIF}`,
-      color: "#7e1d15",
-    });
-    const value = item.value || "________";
-    const valueLines = wrapText(
-      value,
-      bodyLeft + labelWidth + 18,
+    const line = `${item.label}：${item.value}`;
+    const lines = wrapText(
+      line,
+      indentX,
       y,
-      bodyWidth - labelWidth - 18,
-      48,
+      bodyWidth - 60,
+      50,
       2,
       `30px ${SERIF}`,
     );
-    valueLines.forEach((line) => {
-      drawText(line.text, bodyLeft + labelWidth + 18, line.y, {
+    lines.forEach((text) => {
+      drawText(text.text, indentX, text.y, {
         font: `30px ${SERIF}`,
-        color: "#241b15",
+        color: "#1a1a1a",
       });
     });
-    y = valueLines[valueLines.length - 1].y + 52;
+    y = lines[lines.length - 1].y + 48;
   });
 
-  drawText("对战规则", bodyLeft, y + 4, {
-    font: `700 36px ${SERIF}`,
-    color: "#1d1713",
-  });
-  y += 62;
+  y += 18;
 
   const rules = [
     "1. 纯 1v1，无外援、无队友、不卡 bug、不搞偷袭，只拼枪法身法意识。",
@@ -330,78 +285,60 @@ function draw() {
   rules.forEach((rule) => {
     const lines = wrapText(
       rule,
-      bodyLeft,
+      indentX,
       y,
-      bodyWidth,
-      55,
+      bodyWidth - 60,
+      52,
       2,
-      `32px ${SERIF}`,
+      `30px ${SERIF}`,
     );
-    lines.forEach((line) => {
-      drawText(line.text, bodyLeft, line.y, {
-        font: `32px ${SERIF}`,
-        color: "#33281f",
+    lines.forEach((text) => {
+      drawText(text.text, indentX, text.y, {
+        font: `30px ${SERIF}`,
+        color: "#1a1a1a",
       });
     });
-    y = lines[lines.length - 1].y + 40;
+    y = lines[lines.length - 1].y + 44;
   });
 
-  y += 24;
-  drawText("胜者扬眉，败者认罚，敢接就来，谁怂谁先溜！", centerX, y, {
-    font: `700 40px ${SERIF}`,
-    color: "#a72b1f",
-    align: "center",
+  y += 32;
+  const sloganLines = wrapText(
+    "胜者扬眉，败者认罚，敢接就来，谁怂谁先溜！",
+    indentX,
+    y,
+    bodyWidth - 60,
+    56,
+    2,
+    `700 34px ${SERIF}`,
+  );
+  sloganLines.forEach((text) => {
+    drawText(text.text, indentX, text.y, {
+      font: `700 34px ${SERIF}`,
+      color: "#1a1a1a",
+    });
   });
+  y = sloganLines[sloganLines.length - 1].y + 130;
 
-  y += 118;
-  const signatureY = y;
-  const signatureGap = 440;
-
-  drawText("挑战者：", bodyLeft + 50, signatureY, {
+  drawText(`挑战者：${data.challenger}`, rightX, y, {
     font: `30px ${SERIF}`,
-    color: "#1d1713",
+    color: "#1a1a1a",
+    align: "right",
   });
-  drawText(data.challenger, bodyLeft + 210, signatureY, {
-    font: `700 30px ${SERIF}`,
-    color: "#241b15",
-  });
-  ctx.save();
-  ctx.strokeStyle = "rgba(31, 26, 22, 0.55)";
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(bodyLeft + 210, signatureY + 20);
-  ctx.lineTo(bodyLeft + 640, signatureY + 20);
-  ctx.stroke();
-  ctx.restore();
-
-  drawText("应战人：", bodyLeft + 50 + signatureGap, signatureY, {
+  y += 70;
+  drawText(`应战人：${data.defender}`, rightX, y, {
     font: `30px ${SERIF}`,
-    color: "#1d1713",
+    color: "#1a1a1a",
+    align: "right",
   });
-  drawText(data.defender, bodyLeft + 210 + signatureGap, signatureY, {
-    font: `700 30px ${SERIF}`,
-    color: "#241b15",
-  });
-  ctx.save();
-  ctx.strokeStyle = "rgba(31, 26, 22, 0.55)";
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(bodyLeft + 210 + signatureGap, signatureY + 20);
-  ctx.lineTo(bodyLeft + 640 + signatureGap, signatureY + 20);
-  ctx.stroke();
-  ctx.restore();
-
-  drawText("日期：", bodyLeft + 50, signatureY + 118, {
+  y += 70;
+  drawText(`日期：${data.issueDate}`, rightX, y, {
     font: `30px ${SERIF}`,
-    color: "#1d1713",
-  });
-  drawText(data.issueDate, bodyLeft + 190, signatureY + 118, {
-    font: `700 30px ${SERIF}`,
-    color: "#241b15",
+    color: "#1a1a1a",
+    align: "right",
   });
 
   if (data.showSeal) {
-    drawSeal(CANVAS_W - 170, signatureY + 118);
+    drawSeal(rightX - 150, y + 42);
   }
 }
 
